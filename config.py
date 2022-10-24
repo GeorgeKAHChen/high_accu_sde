@@ -5,17 +5,19 @@
 #
 #------------------------------------------------
 
-from model import fdrs as dyn
-accu = 45
+#from model import fdrs as dyn
+import lorenz as dyn
+
+accu = 50
 delta_t = 1e-5
 delta_t_ob = 1e-3
 t_ob = 0.5
 t_le = 0.9
 t_ps = 0.8
-t_max = 300
+t_max = 500
 
-o_ob = 1
-o_le = 0
+o_ob = 0
+o_le = 1
 o_ps = 0
 
 #------------------------------------------------

@@ -2,7 +2,7 @@ def rk4(curr_x, curr_para, curr_t, f, delta_t):
     x1 = curr_x
     t1 = curr_t
     k1 = f(x1, curr_para, t1, delta_t)
-
+    
     x2 = []
     for i in range(0, len(curr_x)):
         x2.append(curr_x[i] + k1[i] * delta_t / 2)

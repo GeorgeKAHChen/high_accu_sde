@@ -6,6 +6,7 @@ import mpmath as mp
 
 import config
 from layers import rk4
+from layers import le
 
 
 mp.mp.dps = config.accu
@@ -61,6 +62,8 @@ def main():
     if not os.path.exists("output"):
         os.system("mkdir output")
 
+    print(group_size)
+
     for kase in range(0, group_size):
         """
             Initialization and definition
@@ -75,7 +78,7 @@ def main():
 
         ttl = 0
 
-        le = []
+        val_le = []
         eye = []
         str_orbits = ""
         ps = []
@@ -116,6 +119,16 @@ def main():
             file.write("")
             file.close()
 
+        if o_le:
+            val_le = [mp.mpf(float(0.0)) for n in range(dim)]
+            eye = [mp.mpf(float(0.0)) for n in range(dim * dim)]
+            tmp_val = 0
+            while 1:
+                if tmp_val > dim * dim:
+                    break
+                eye[tmp_val] = mp.mpf(float(1.0))
+                tmp_val += (dim + 1)
+
         """
             Main algorithm
         
@@ -145,6 +158,9 @@ def main():
                     file.close()
                     str_orbits = ""
 
+            if o_le and curr_t > t_le:
+                val_le, eye = le.le(curr_x, curr_para, curr_t, Jf, delta_t, eye, val_le, t_le, dim)
+
         """
             After treatment
         
@@ -154,14 +170,16 @@ def main():
             file.write(str_orbits)
             file.close()
             str_orbits = ""
-            """
-            if o_le and curr_t > t_le:
-                le = lya_spec(curr_x, curr_para, curr_t, Jf, delta_t, le, eye)
-            if o_ps and curr_t > t_ps:
-                tmp_ps, last_val, last_last_val = ps_check(curr_x, last_val, last_last_val)
-                ps.append(tmp_ps)
-            """
-        
+
+        if o_le:
+            save_file_name = "output/" + str(kase) + ".dat"
+            file = open(save_file_name, "a")
+            tmp_str = ""
+            for i in range(0, len(val_le)):
+                tmp_str += str(float(val_le[i])) + " "
+            file.write(tmp_str)
+            file.close()
+            print(tmp_str)
     return 
 
 if __name__ == '__main__':
